@@ -93,22 +93,6 @@ return (
         </Route>
         <Route path={match.path}>  
           <List />
-    {/*
-    
-       <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-
-        {Array.from({ length: 12 }).map((_, index) => (
-            <Col key={index}>
-            <Husky tokenidprop={index + 1}/>
-            </Col>
-
-
-            ))}
-      </Row>
-    */} 
-
-  
-
         </Route>
 </Switch>
      
