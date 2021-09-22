@@ -6,9 +6,9 @@ const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey); 
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
-const contract = require('../contract-abi.json')
-const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
-
+const contract = require('../contract')
+const nftContract = new web3.eth.Contract(contract.contract.abi, contractAddress);
+const ethWallet = "0xA571C095f241e4E24a8e09b95E1b667a8eDa70c2"
 ///console.log(nftContract.methods.getPrice.encodeABI())
 ///etherscan
 const etherscanKey = process.env.REACT_APP_ETHERSCAN_KEY;
@@ -140,7 +140,7 @@ export const mintNFT = async(tokenCount) => {
       'to': contractAddress,
       'nonce': nonce.toString(),
       'value': hexString,
-      'data': nftContract.methods.mint(tokenCount).encodeABI()
+      'data': nftContract.methods.mintTo(ethWallet, nonce).encodeABI()
     };
   
    

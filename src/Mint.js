@@ -191,8 +191,8 @@ const txReceiptListener = async () => {
 
     if(txProgress === 0)
     return (
-      walletAddress && (<Button disabled variant="dark" onClick={onMintPressed}>
-      Minting starts on October 15th! 
+      walletAddress && (<Button variant="dark" onClick={onMintPressed}>
+      Mint
      </Button> ) 
         
     )

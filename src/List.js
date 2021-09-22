@@ -6,55 +6,23 @@ import Pagination from 'react-bootstrap/Pagination'
 import Button from 'react-bootstrap/Button'
 import Placeholder from 'react-bootstrap/Placeholder'
 import Container from "react-bootstrap/Container";
-import Husky from "./Husky";
+import Planet from "./Planet";
 import {
   getTokenSupply
  } from "./utils/interact.js";
 
-const activity = {
-    "Ski": "skiing",
-    "Surf": "surfing",
-    "Skateboard": "skateboarding",
-    "None": "riding nothing"
-}
-
-const accessory = {
-    "Doobie": "smoking",
-    "Gold Chain": "wearing a goldchain",
-    "Medwakh Pipe": "medwakhpipe",
-    "Pipe": "smoking a pipe",
-    "Pride": "pride", 
-    "Red Sunnies": "wearing red sunglasses",
-    "Aviators": "wearing aviators", 
-    "Heart Sunglasses": "wearing heart sunglasses", 
-    "Bugeyes": "bugeyed sunglasses",
-    "None": "wearing nothing"
-}
-
-const hat = {
-    "Admiral": "an Admiral's hat",
-    "Touk": "a touk",
-    "Cap": "a pink cap",
-    "Witch": "a witches hat", 
-    "Copyright Friendly Plumber Guy": "a famous plumbers hat",
-    "Santa": "santa hat",
-    "Police": "policemans cap",
-    "Sombrero": "sombrero",
-    "None": "nothing"
-}
-
 
 const List = (props) => {
 
-    const [huskyMeta, setHuskyMeta] = useState([]);
-    const [huskyMetaLoaded, setHuskyMetaLoaded] = useState(false);
-    const [page, setPage] = useState(0);
+    const [planetMeta, setplanetMeta] = useState([]);
+    const [planetMetaLoaded, setplanetMetaLoaded] = useState(false);
+    const [page, setPage] = useState(1);
 
-    const numberperpage = 3
+    const numberperpage = 8
 
     useEffect(async () => {
     
-        getHuskyMeta();
+        getplanetMeta();
 
 
     }, [page]);
@@ -62,24 +30,26 @@ const List = (props) => {
     let start = (page * numberperpage)
     let end = ((page + 1) * numberperpage)
     
-    const getHuskyMeta = async () => {
+    const getplanetMeta = async () => {
         
     let resultArray = []
 
     for(let i=start; i<end;i++){
 
-        const response = await fetch(`https://huskies.s3.eu-west-2.amazonaws.com/metadata/${i}`);
+        const response = await fetch(`https://cloud-cube-us2.s3.amazonaws.com/deepspace/public/planet/metadata/${i}`);
         const answer = await response.json()
+
+        console.log(answer)
         resultArray.push(answer)
 
     }      
-     setHuskyMeta(resultArray)
-     setHuskyMetaLoaded(true)
+     setplanetMeta(resultArray)
+     setplanetMetaLoaded(true)
     };
 
 
     const onPagePress = (pageNum)=> { //TODO: implement
-        setHuskyMetaLoaded(false)
+        setplanetMetaLoaded(false)
         setPage(pageNum)
       };
 
@@ -88,53 +58,13 @@ const List = (props) => {
  
     return (
       <div class="min-h-full">
-    <Row xs={1} sm={2} md={3} className="g-4">
-    {huskyMeta.map((pup, index) => (
-      <Col key={pup.name}>
-        {console.log(pup.tokenId)}
-     <Husky key={pup.name + index} tokenidprop={pup.tokenId} />
+    <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+    {planetMeta.map((planet, index) => (
+      <Col key={planet.name}>
+
+     <Planet key={planet.name + index} tokenidprop={index + 1} />
       
-       {/* <Card key={index}>
-         {huskyMetaLoaded ? (
-             <Card.Img variant="top" src={`https://huskies.s3.eu-west-2.amazonaws.com/images/${pup.tokenId}.png`} />
-         ):(
-            <Card.Img variant="top" src={`https://huskies.s3.eu-west-2.amazonaws.com/grey.png`} />
-         )} 
-        <Card.Body>
-            {huskyMetaLoaded ? (
-                   
-                   <>
-                   <Card.Title>Hilarious Huskies #{pup.tokenId}</Card.Title>
-                   <Card.Text>
-                   Wearing {hat[pup.attributes[2].value]}, this collectable pup is on a {pup.attributes[0].value} background. 
-                   It looks like he is {activity[pup.attributes[1].value]}.
-                   
-                   </Card.Text>
-                    <Button variant="dark" onClick={(e) => {
-                                    e.preventDefault();
-                                      window.location.href=`/huskies/${pup.tokenId}`;
-                                             }}>
-                    
-                    Details</Button>
-                  
-                   
-                   </>                   
-                 
-         ):(
-            <>
-                   <Placeholder as={Card.Title} animation="glow"><Placeholder xs={8} /></Placeholder>
-                   <Placeholder as={Card.Text} animation="glow">
-                       <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
-                       <Placeholder xs={6} /> <Placeholder xs={8} />
-                   </Placeholder>
-                   <Placeholder.Button variant="primary" xs={6} />
-            </>  
-         )} 
-          
-     
-          </Card.Body>            
-        </Card>
-         */}
+  
        </Col>
     ))}
   </Row>

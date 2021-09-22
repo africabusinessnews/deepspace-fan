@@ -4,13 +4,9 @@ import { getContent } from './utils/cms';
 import HTML2React from 'html2react'
 const Intro = (props) => {
 
-const [data, setData] = useState({Title: "Hilarious Huskies", Body: "Hilarious Huskies is an NFT collection inspired by a beautiful Siberian Husky, named Hazel."})
-const huskiesonDisplay = ["310.png","217.png","218.png","109.png","logo.gif","123.png","115.png","1337.png","266.png"]
+const [data, setData] = useState({Title: "Deep Space", Body: "This is a fan site. Like a blockchain explorer for your planets."})
+const planetsonDisplay = ["310.png","69.png","218.png","109.png","1337.png","123.png","115.png","420.png","266.png"]
 
-useEffect(async () => {
-  setData(await getContent("website-sections/1"))
-
-},[0]);
   
 
 
@@ -35,7 +31,7 @@ useEffect(async () => {
      <div class="hidden lg:w-1/2 md:flex md:flex-wrap">
     {Array.from({ length: 9 }).map((_, index) => (
       <div key={index} class="p-1 w-1/3">
-    <img class="shadow-lg rounded-3xl" src={`https://huskies.s3.eu-west-2.amazonaws.com/images/${huskiesonDisplay[index]}`} />
+    <img class="shadow-lg rounded-3xl" src={`https://cloud-cube-us2.s3.amazonaws.com/deepspace/public/planet/image/${planetsonDisplay[index]}`} />
     </div>
   ))}
   </div>
