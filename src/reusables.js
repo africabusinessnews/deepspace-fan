@@ -3,7 +3,6 @@ import {
  getTokenSupply, getGasPrice, getContractAddress
 } from "./utils/interact.js";
 import { SocialIcon } from 'react-social-icons';
-import { shaFinal } from "./shaData";
 import Placeholder from 'react-bootstrap/Placeholder'
 
 export const ContractStats = (props) => {

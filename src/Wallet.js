@@ -13,7 +13,6 @@ import {
   Route,
 } from "react-router-dom";
 import Explore from './Explore'
-import TableList from './Table';
 import { Helmet } from 'react-helmet';
 import banner from "./media/banner.jpg"
 import NavComp from './Nav';    
