@@ -50,7 +50,7 @@ const Verify = (props) => {
       <div class="flex flex-wrap justify-left items-center align-middle space-x-3 ">
    
         <label class="text-lg font-semibold" for="tokenId">Enter SPACE! Token ID</label>
-        <input ref={refContainer} id="tokenId" type="number" min="0" max="2999" class="rounded" />
+        <input ref={refContainer} id="tokenId" type="number" min="0" max="10000" class="rounded" />
    
         <Button variant="dark" onClick={onGo}>Go</Button>
    

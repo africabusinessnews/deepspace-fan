@@ -13,6 +13,7 @@ const Miner = (props) => {
   const [previousHash, setPreviousHash] = useState();
   const [currentHash, setCurrentHash] = useState();
   const [currentIndex, setCurrentIndex] = useState(false);
+  const [totalTokens, setTotalTokens] = useState(0);
   const [showMsg, setMsg] = useState();
 
   const updateMintDetails = async () => {
@@ -25,6 +26,10 @@ const Miner = (props) => {
 
     const token = await props.space.methods.currentTokenId().call();
     setCurrentTokenId(token);
+
+    const totalPlanets = await props.space.methods.totalSupply().call();
+    setTotalTokens(totalPlanets);
+
   };
 
   useEffect(() => {
@@ -78,8 +83,8 @@ const Miner = (props) => {
          
           await Promise.all(
 
-            Array.from({ length: 3000 }).map((_, index) => (
-              chechproof((nonce * 3000) + index, accounts[0])
+            Array.from({ length: 5000 }).map((_, index) => (
+              chechproof((nonce * 5000) + index, accounts[0])
             ))
             
             )
@@ -140,6 +145,7 @@ const Miner = (props) => {
                 <p>Total planets mined</p>
                 <h6>{currentTokenId}</h6>
               </div>
+              {totalTokens}
               <div className="d-flex justify-content-between align-items-center">
                 <p>Current Block Number</p>
                 <h6>{currentBlockNum}</h6>

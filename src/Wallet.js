@@ -2,6 +2,7 @@ import React, { useState, Suspense, lazy, useEffect } from "react";
 import Web3 from "web3";
 //NOTE: UPDATE THIS JSON WHEN NEW DEPLOYMENT IS DONE
 import {contract} from "./contract";
+import {burnerabi} from "./burnerabi";
 import Miner from "./Miner"
 import MyCollection from "./MyCollection";
 import Button from "react-bootstrap/Button";
@@ -19,10 +20,14 @@ import NavComp from './Nav';
 import Verify from './Verify';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-
+import {getTokenData} from "./utils/interact"
+import Top from "./Top";
+import Burner from "./Burner"
 const history = createBrowserHistory();
 
 const Wallet = () => {
+
+
   const [collection, setCollection] = useState(false);
   const [collectionItems, setCollectionItems] = useState();
   const [walletAddress, setWalletAddress] = useState("");
@@ -38,6 +43,11 @@ const Wallet = () => {
   const [walletRefreshNum, setWalletRefreshNum] = useState(0);
   const [withdrawInProgress, setWithdrawInProgress] = useState(false);
   const [walletErr, setWalletErr] = useState();
+
+    //burner details
+    const [burner, setBurner] = useState();
+    const [burnerContractAddress, setBurnerAddress] = useState();
+
 
   const refreshUserBank = async () => {
     setWalletRefresh(true);
@@ -59,8 +69,10 @@ const Wallet = () => {
   };
 
   useEffect(() => {
-    // //TODO: contract address should be in an env
+    // TODO: contract address should be in an env
     setContractAddress("0x1E4e1208Ab4BA7740FE73D3728DF1f89bE6C649b");
+    // TODO: update the burner address
+    setBurnerAddress("0xD3D6d30A2f4676e90C62EE28aDa3B4211AE13Eb7");
   }, []);
 
   const connectWallet = async (event) => {
@@ -86,6 +98,8 @@ const Wallet = () => {
 
       //set default account
       const accounts = await web3Instance.eth.getAccounts();
+
+      //"0xa468d9eaac45897163ada88d876ecf2b0ccdce7e" //accounts[0]
       setWalletAddress(accounts[0]);
 
       // set user bank details
@@ -101,7 +115,18 @@ const Wallet = () => {
         .call();
       setCollectionItems(rockSummary);
       setTotalPlanetOwned(rockSummary.length);
+
+        // set up burner
+        const burnerInstance = new web3Instance.eth.Contract(
+          burnerabi.abi,
+          burnerContractAddress
+        );
+        setBurner(burnerInstance);
     };
+
+
+        
+    
 
     if (process.env.NODE_ENV === "production") {
       const chainID = await web3Instance.eth.getChainId();
@@ -140,6 +165,8 @@ const Wallet = () => {
     setWithdrawInProgress(false);
   };
 
+  
+
   return (
     <>
 
@@ -176,6 +203,9 @@ const Wallet = () => {
                 <Route path="/verify">
                 <Verify />
                 </Route>
+                <Route path="/top">
+                <Top />
+                </Route>
                 <Route path="/collection">
                
                     <MyCollection
@@ -199,7 +229,7 @@ const Wallet = () => {
     <div className="wallet_address col-lg-10">
       <div className="col-lg-10 mx-auto px-3">
         <div className="address_details">
-          <div className="d-flex justify-content-between align-items-center flex-wrap">
+             <div className="d-flex justify-content-between align-items-center flex-wrap">
             <p>Wallet Address</p>
             <h6 className="walletAddress">{walletAddress}</h6>
           </div>
@@ -250,8 +280,17 @@ const Wallet = () => {
 {!walletErr && walletAddress && (
   <Suspense fallback={<div></div>}>
     <Miner web3={web3} space={space} />
+    <Burner
+            web3={web3}
+            space={space}
+            burner={burner}
+            burnerContractAddress={burnerContractAddress}
+          />
+
   </Suspense>
 )}
+
+
 
 </div>
 <Intro />

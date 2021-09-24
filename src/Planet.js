@@ -35,7 +35,7 @@ const Planet = ({tokenidprop, owed}) => {
     }
 
     useEffect(async () => {   
-        if(tokenId < 3000 ) {
+        if(tokenId < 10000 ) {
             getplanetProvenance()
         }
 

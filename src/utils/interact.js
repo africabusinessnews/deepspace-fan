@@ -42,6 +42,14 @@ export const getGasPrice = async () => {
 }
 
 
+export const getTokenData = async () => {
+  const gasApi = fetch(`https://api.etherscan.io/api?module=token&action=tokeninfo&contractaddress=${contractAddress}&apikey=${etherscanKey}`, {method: "GET"})
+  const response = (await gasApi).json()
+
+  return(response)
+}
+
+
 
 export const getTxReceipt = async (txHash) => {
   var ret = api.proxy.eth_getTransactionReceipt(txHash); 
