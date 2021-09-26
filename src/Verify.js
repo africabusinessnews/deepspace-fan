@@ -14,9 +14,7 @@ const Verify = (props) => {
 
       const onGo = (e)=> { //TODO: implement
         let planetToken = refContainer.current.value
-        if(planetToken > 2999){
-          planetToken = 2999
-        }
+        
         if(planetToken < 0){
           planetToken = 0
         }
