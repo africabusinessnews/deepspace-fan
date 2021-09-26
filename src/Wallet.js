@@ -23,6 +23,7 @@ import Nav from 'react-bootstrap/Nav'
 import {getTokenData} from "./utils/interact"
 import Top from "./Top";
 import Burner from "./Burner"
+import Revenue from "./Revenue";
 const history = createBrowserHistory();
 
 const Wallet = () => {
@@ -105,13 +106,14 @@ const Wallet = () => {
       // set user bank details
       // NOTE: this is the same as the refreshUserBank but needs to be seperate
       // because space and accounts are undefined
+      let wallettocheck = accounts[0]//"0x35a9bfd953b4a9b7b64718c5a0988fa6a88f1ce5"
       const summary = await spaceInstance.methods
-        .userHighLevelSummary(accounts[0])
+        .userHighLevelSummary(wallettocheck)
         .call();
       setBalance(summary.amountOwed);
       setWithdrawn(summary.amountRewarded);
       const rockSummary = await spaceInstance.methods
-        .userRockLevelSummary(accounts[0])
+        .userRockLevelSummary(wallettocheck)
         .call();
       setCollectionItems(rockSummary);
       setTotalPlanetOwned(rockSummary.length);
@@ -183,6 +185,7 @@ const Wallet = () => {
       <Nav.Link href="/explore/">Explore</Nav.Link>
       <Nav.Link href="/provenance/">Provenance</Nav.Link>
       <Nav.Link href="/verify/">Verify</Nav.Link>
+      <Nav.Link href="/revenue/">Revenue</Nav.Link>
       <Nav.Link href="/collection/">My Collection</Nav.Link>
       <Nav.Link href="#">
           <Button variant="dark" className="connect" onClick={connectWallet}>
@@ -205,6 +208,9 @@ const Wallet = () => {
                 </Route>
                 <Route path="/top">
                 <Top />
+                </Route>
+                <Route path="/revenue">
+                <Revenue />
                 </Route>
                 <Route path="/collection">
                
