@@ -27,7 +27,9 @@ useEffect(() => {
     );
 
     const totalPlanets = await spaceInstance.methods.totalSupply().call();
-    setTotalPlanets(totalPlanets)
+    const tokenPlanets = await spaceInstance.methods.currentTokenId().call();
+
+    setTotalPlanets(tokenPlanets)
 
     let arr = []
     let objectof
