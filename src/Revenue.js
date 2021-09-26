@@ -47,6 +47,8 @@ useEffect(() => {
           if(address !== "0x0000000000000000000000000000000000000000"){
 
               let rockSummary = await spaceInstance.methods.userRockLevelSummary(address).call();
+              const summary = await spaceInstance.methods.userHighLevelSummary(address).call();
+            
 
                rockSummary.map((item)=>{
 
@@ -72,6 +74,7 @@ useEffect(() => {
                                     trait: traitType,
                                     cost: salePrice ? web3.utils.fromWei(salePrice) : null,
                                     contract_address:address,
+                                    ownerReward: summary.amountRewarded ? web3.utils.fromWei(summary.amountRewarded) : null,
                                     osResponse: response                
                       }
 
@@ -115,6 +118,7 @@ return (
       <th>Cost</th>
       <th>Net Cost</th>
       <th>Owner Address</th>
+      <th>Owner Total Payout</th>
     </tr>
     </thead>
     <tbody>
@@ -135,6 +139,9 @@ return (
     
     rock.cost - rock.amountOwed)}</td>
     <td>{rock.contract_address}</td>
+    <td>{rock.ownerReward}</td>
+
+    
     </tr>
     </>)
 
