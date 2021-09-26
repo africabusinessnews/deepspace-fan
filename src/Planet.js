@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Placeholder from 'react-bootstrap/Placeholder'
+import {contract} from "./contract";
 import {
     BrowserRouter as Router,
     Switch,
@@ -11,6 +12,11 @@ import {
     useParams
   } from "react-router-dom";
 
+  require('dotenv').config();
+
+  const API_URL = process.env.REACT_APP_ALCHEMY_KEY;
+  const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
+  const web3 = createAlchemyWeb3(API_URL);
 
 const Planet = ({tokenidprop, owed}) => {
 
@@ -22,9 +28,10 @@ const Planet = ({tokenidprop, owed}) => {
     const [planetMeta, setPlanetMeta] = useState("Loading...");
     const placeholderImg = "https://cloud-cube-us2.s3.amazonaws.com/deepspace/public/base.png"
     const imageSrc = `https://cloud-cube-us2.s3.amazonaws.com/deepspace/public/planet/image/${tokenId}.png`
-   
+    const contractAddress= "0x1E4e1208Ab4BA7740FE73D3728DF1f89bE6C649b"
     const [mintedFlag, setMintedFlag] = useState(false);
     const [loadedFlag, setloadedFlag] = useState(false);
+    const [owedWeb3, setOwedWeb3] = useState(0);
     
   
 
@@ -35,28 +42,31 @@ const Planet = ({tokenidprop, owed}) => {
     }
 
     useEffect(async () => {   
-        if(tokenId < 10000 ) {
-            getplanetProvenance()
-        }
+    
+    getplanetProvenance()
+    
 
     }, [tokenId]);
 
 const getplanetProvenance = async () => {
 
+        // set school contract
+        const spaceInstance = new web3.eth.Contract(contract.abi,contractAddress);
+    
+   
+    
+    
   
     let osRequest
     let osResponse
-    let metaRequest
-    let metaResponse
     let responseString
 
         try{
             osRequest = await fetch(`https://deepspace.huskies.workers.dev/?token=${tokenId}`, init);
-            metaRequest = await fetch(`https://cloud-cube-us2.s3.amazonaws.com/deepspace/public/planet/metadata/${tokenId}`, init);
             osResponse = await osRequest.json()
-            metaResponse = await metaRequest.json()
-            setPlanetMeta(metaResponse)
 
+            setPlanetMeta(osResponse.traits)
+         
         }catch(e){console.log(e)}
                  
             if(osResponse.success === false){
@@ -69,22 +79,58 @@ const getplanetProvenance = async () => {
                 setloadedFlag(true)
             }
             
+
             if(osResponse.top_ownerships){
                
+                let owneraddress = osResponse.top_ownerships[0].owner.address
+                let rockSummary = await spaceInstance.methods.userRockLevelSummary(owneraddress).call();
+              
                 responseString = osResponse.top_ownerships.map((owner, index) =>{
                     
+                    
+
+                    rockSummary.map((item)=>{
+
+                        if(item.amountOwed > 0 && item.tokenId === osResponse.token_id){
+                          
+                        
+                          let salePrice 
+                        
+                          try{
+                            salePrice = osResponse.orders[0].base_price
+                              }catch(e){console.log(e)}
+                          
+                          let salesobj = {
+                            
+                                        amountOwed: item.amountOwed ? web3.utils.fromWei(item.amountOwed):null,
+                                        cost: salePrice ? web3.utils.fromWei(salePrice) : null,
+                                                  
+                          }
+    
+                          setOwedWeb3(salesobj)
+    
+                  }
+                })
+
                         return(
                         <>
                         <ListGroup.Item key={index}> Owner Address: <span class="font-medium"><a href={`https://etherscan.io/address/${owner.owner.address}`}>
                         {owner.owner.address}</a></span></ListGroup.Item>
                         {owner.owner.user &&
-                        (<>
-                        <ListGroup.Item key={index}>
-                                 Owner:{" "}
+                        (<>                        
+                                 {owner.owner.user.username && (
+                                <>
+                                <ListGroup.Item key={index}>
+                                     Owner:{" "}
                                  <span class="font-medium">
                                      {owner.owner.user.username}
                                 </span>
-                        </ListGroup.Item></>)}
+                                </ListGroup.Item>
+                                </>
+
+                                 )}
+                                
+                       </>)}
                         </>)
                     
                 })
@@ -117,7 +163,7 @@ return (
                             <ListGroup variant="flush">
                                 <Card.Header>Traits</Card.Header>
 
-                                {planetMeta.attributes.map((trait, index) => {
+                                {planetMeta.map((trait, index) => {
 
                                     return( <ListGroup.Item><span class="font-medium">{trait.trait_type}</span> {trait.value}</ListGroup.Item>)
                                 })}
@@ -129,9 +175,9 @@ return (
                    
 
                    <ListGroup variant="flush">
-                   <Card.Header>Provenance</Card.Header>
+                   <Card.Header>Ownership Stuff</Card.Header>
                    {planetProv}
-                   <ListGroup.Item><span class="font-medium">Owed:</span> {owed}</ListGroup.Item>
+                   <ListGroup.Item><span class="font-medium">Owed:</span> {owed ? owed : owedWeb3.amountOwed}</ListGroup.Item>
                    
                    </ListGroup>  
                    </>  
@@ -155,4 +201,5 @@ return (
 };
 
 export default Planet;
+
 
