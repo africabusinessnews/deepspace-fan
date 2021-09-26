@@ -35,7 +35,7 @@ useEffect(() => {
     let objectof
     let listedforsale = false
 
-      for(let i =1; i<totalPlanets; i++){
+      for(let i =1; i<tokenPlanets; i++){
 
         try{
           let data = await fetch(`https://deepspace.huskies.workers.dev/?token=${i}`, cfinit)
